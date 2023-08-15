@@ -1,15 +1,18 @@
 import 'react-native-gesture-handler';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useState} from 'react';
+import {PropsWithChildren, createContext, useEffect} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import Login from './src/Screens/Login';
 import Register from './src/Screens/Register';
+
+import products from './src/contextAPI/products.json';
 
 // Stack Navigation
 // Bottom tab /Navigation
@@ -20,14 +23,9 @@ const Tab = createBottomTabNavigator();
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import MainNavigator from './src/navigation/StackNavigator';
+import Products from './src/contextAPI/Products';
 
 const Drawer = createDrawerNavigator();
-
-
-
-
-
-
 
 {
   /* <NavigationContainer>
@@ -43,9 +41,57 @@ const Drawer = createDrawerNavigator();
 </NavigationContainer> */
 }
 
-function App(): JSX.Element {
-  return <MainNavigator />
+/**
+ * 1. Create new context
+ */
+export const ProductContext = createContext<any>(null);
 
+function App(): JSX.Element {
+  // useEffect(() => {
+  //   const fetchAllProducts = () => {
+  //     fetch('https://fakestoreapi.com/products')
+  //       .then(res => res.json())
+  //       .then(json => {
+  //         console.log(json);
+  //         setProducts(json);
+  //         setLoading(false);
+  //       });
+  //   };
+  //   fetchAllProducts();
+  // }, []);
+  // return <MainNavigator />;
+
+  const onAddProduct = () => {
+    console.log('add product');
+  };
+
+  const deleteProduct = () => {
+    console.log('delete product');
+  };
+
+  return (
+    //  2. Provide a value to child component
+    <ProductContext.Provider
+      value={{
+        products: products,
+        onAddProduct: onAddProduct,
+        deleteProduct: deleteProduct,
+      }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Products">
+          <Stack.Screen
+            name="Products"
+            component={Products}
+            initialParams={{
+              products,
+            }}
+            options={{headerShown: true}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ProductContext.Provider>
+  );
+}
 const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
