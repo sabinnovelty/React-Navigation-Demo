@@ -23,7 +23,9 @@ const Tab = createBottomTabNavigator();
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import MainNavigator from './src/navigation/StackNavigator';
-import Products from './src/contextAPI/Products';
+// import Products from './src/contextAPI/Products';
+import Products from './src/Screens/Products';
+import Product from './src/Screens/Product';
 
 const Drawer = createDrawerNavigator();
 
@@ -44,9 +46,19 @@ const Drawer = createDrawerNavigator();
 /**
  * 1. Create new context
  */
-export const ProductContext = createContext<any>(null);
+// export const ProductContext = createContext<any>(null);
+export const CountContext = createContext(null);
 
 function App(): JSX.Element {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Products" component={Products} />
+        <Stack.Screen name="Product" component={Product} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+  const [count, setCount] = useState(10);
   // useEffect(() => {
   //   const fetchAllProducts = () => {
   //     fetch('https://fakestoreapi.com/products')
@@ -61,6 +73,9 @@ function App(): JSX.Element {
   // }, []);
   // return <MainNavigator />;
 
+  const [cartCount, setCartCount] = useState(12);
+  const [userName, setUserName] = useState('John');
+
   const onAddProduct = () => {
     console.log('add product');
   };
@@ -69,14 +84,23 @@ function App(): JSX.Element {
     console.log('delete product');
   };
 
+  const incrementCart = () => {
+    setCartCount(cartCount + 1);
+  };
+
+  const decrementCart = () => {
+    setCartCount(cartCount - 1);
+  };
+
+  const incrementCount = () => {
+    setCartCount(cartCount + 1);
+  };
+
+  // Provider,Conusmer,Value
   return (
-    //  2. Provide a value to child component
-    <ProductContext.Provider
-      value={{
-        products: products,
-        onAddProduct: onAddProduct,
-        deleteProduct: deleteProduct,
-      }}>
+    //1 create provider
+    //2
+    <CountContext.Provider value={{count: cartCount, incrementCount}}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Products">
           <Stack.Screen
@@ -87,9 +111,27 @@ function App(): JSX.Element {
             }}
             options={{headerShown: true}}
           />
+          <Stack.Screen
+            name="Products"
+            component={Products}
+            initialParams={{
+              products,
+            }}
+            options={{headerShown: true}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
-    </ProductContext.Provider>
+    </CountContext.Provider>
+
+    //  2. Provide a value to child component
+    // <ProductContext.Provider
+    //   value={{
+    //     products: products,
+    //     onAddProduct: onAddProduct,
+    //     deleteProduct: deleteProduct,
+    //   }}>
+
+    // </ProductContext.Provider>
   );
 }
 const styles = StyleSheet.create({
