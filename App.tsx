@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import React, {useState} from 'react';
+import React, {Component, useState} from 'react';
 import {PropsWithChildren, createContext, useEffect} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
@@ -26,6 +26,8 @@ import MainNavigator from './src/navigation/StackNavigator';
 // import Products from './src/contextAPI/Products';
 import Products from './src/Screens/Products';
 import Product from './src/Screens/Product';
+import {ProductsProvider} from './src/Context/ProductsContext';
+import CheckoutScreen from './src/Screens/CheckoutScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -46,17 +48,20 @@ const Drawer = createDrawerNavigator();
 /**
  * 1. Create new context
  */
-// export const ProductContext = createContext<any>(null);
-export const CountContext = createContext(null);
+export const ProductContext = createContext<any>(null);
+// export const CountContext = createContext(null);
 
 function App(): JSX.Element {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Products" component={Products} />
-        <Stack.Screen name="Product" component={Product} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ProductsProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Products" component={Products} />
+          <Stack.Screen name="Product" component={Product} />
+          <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ProductsProvider>
   );
   const [count, setCount] = useState(10);
   // useEffect(() => {
@@ -134,6 +139,7 @@ function App(): JSX.Element {
     // </ProductContext.Provider>
   );
 }
+
 const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
@@ -154,3 +160,5 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+// Provider, Value Consumer
